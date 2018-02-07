@@ -30,7 +30,7 @@
       flex: 1
       text-align: center
       .tab-link
-        padding: 5px
+        padding-bottom: 5px
         color: $color-text-l
       &.router-link-active
         .tab-link
