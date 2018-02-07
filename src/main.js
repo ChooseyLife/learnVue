@@ -3,11 +3,16 @@
 import 'babel-polyfill'
 import Vue from 'vue'
 import App from './App'
+import lazyLoad from 'vue-lazyload'
 import router from './router'
 import fastclick from 'fastclick'
 
 import 'common/stylus/index.styl'
 // Vue.config.productionTip = false
+
+Vue.use(lazyLoad, {
+  loading: require('common/images/default.png')
+})
 
 fastclick.attach(document.body)
 

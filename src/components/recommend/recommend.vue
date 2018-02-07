@@ -7,7 +7,7 @@
           <slide>
             <div v-for="item in recommends" :key="item.code">
               <a :href="item.linkUrl">
-                <img :src="item.picUrl">
+                <img :src="item.picUrl" class="needsclick">
               </a>
             </div>
           </slide>
@@ -17,7 +17,7 @@
           <ul>
             <li v-for="item in discList" :key="item.code" class="item">
               <div class="icon">
-                <img :src="item.imgurl" width="60" height="60">
+                <img v-lazy="item.imgurl" width="60" height="60">
               </div>
               <div class="text">
                 <h2 class="name" v-text="item.creator.name"></h2>
@@ -27,6 +27,9 @@
           </ul>
         </div>
       </div>
+      <div class="loading-container" v-show="!discList.length">
+        <loading></loading>
+      </div>
     </scroll>
   </div>
 </template>
@@ -34,7 +37,9 @@
 <script type="text/ecmascript-6">
 import Slide from 'base/slide/slide'
 import Scroll from 'base/scroll/scroll'
+import Loading from 'base/loading/loading'
 import {ERR_OK} from '@/api/config'
+import lazyLoad from 'vue-lazyload'
 import {getRecommend, getDiscList} from '@/api/recommends'
 export default {
   data() {
@@ -67,7 +72,9 @@ export default {
   },
   components: {
     Slide,
-    Scroll
+    Scroll,
+    Loading,
+    lazyLoad
   }
 }
 </script>
@@ -116,4 +123,9 @@ export default {
               color: #ffffff
             .desc
               color: $color-text-d
+        .loading-container
+          position: absolute
+          width: 100%
+          top: 50%
+          transform: translateY(-50%)
 </style>
