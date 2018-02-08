@@ -29,7 +29,7 @@ export default {
       getSingerList().then((res) => {
         if (res.code === ERR_OK) {
           this.singers = this._normalizeSinger(res.data.list)
-          console.log(this.singers, res.data.list)
+          console.log(this.singers)
         }
       })
     },
@@ -41,6 +41,7 @@ export default {
         }
       }
       list.forEach((item, index) => {
+        // 控制热门歌手每个items的长度
         if (index < HOT_SINGER_LEN) {
           map.hot.items.push(new Singer({
             name: item.Fsinger_name,
@@ -48,12 +49,14 @@ export default {
           }))
         }
         const key = item.Findex
+        // 组成一个字母为key的Obj，排除重复
         if (!map[key]) {
           map[key] = {
             title: key,
             items: []
           }
         }
+        // 属于同一字母的就组成一个Obj
         map[key].items.push(new Singer({
           name: item.Fsinger_name,
           id: item.Fsinger_mid
