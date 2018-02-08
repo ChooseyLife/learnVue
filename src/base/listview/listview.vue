@@ -1,7 +1,7 @@
 <template>
   <scroll class="listview" :data="data" ref="listview">
     <ul>
-      <li v-for="list in data" :key="list.title" class="list-group">
+      <li v-for="list in data" :key="list.title" class="list-group" ref="listGroup">
         <h2 class="list-group-title">{{list.title}}</h2>
         <ul>
           <li v-for="item in list.items" :key="item.id" class="list-group-item">
@@ -30,7 +30,10 @@
 <script type="text/ecmascript-6">
 import Scroll from '@/base/scroll/scroll'
 import Lazy from 'vue-lazyload'
+import {getData} from '@/common/js/dom'
 
+// anchor的高度（设计稿上的数值）
+const ANCHOR_HEIGHT = 18
 export default {
   props: {
     data: {
@@ -64,19 +67,24 @@ export default {
   },
   methods: {
     onShortcutTouchStart(e) {
+      // 点击右侧入口 快速定位到对应的dom （利用scrollToElement方法）
+      let anchorIndex = getData(e.target, 'index')
+      let firstTouch = e.touches[0]
+      this.touch.y1 = firstTouch.pageY
+      this.touch.anchorIndex = anchorIndex
+      this._scrollTo(anchorIndex)
     },
     onShortcutTouchMove(e) {
+      // 计算开始滚动前的位置 和 要滚动后的位置
+      let firstTouch = e.touches[0]
+      this.touch.y2 = firstTouch.pageY
+      // 位置偏差
+      let delta = (this.touch.y2 - this.touch.y1) / ANCHOR_HEIGHT | 0
+      // 解决在滚动时出现 1-1 3-3 的位置问题, 因为this.touch.anchorIndex是字符串
+      let anchorIndex = parseInt(this.touch.anchorIndex) + delta
+      this._scrollTo(anchorIndex)
     },
     _scrollTo(index) {
-      if (!index && index !== 0) {
-        return
-      }
-      if (index < 0) {
-        index = 0
-      } else if (index > this.listHeight.length - 2) {
-        index = this.listHeight.length - 2
-      }
-      this.scrollY = -this.listHeight[index]
       this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
     }
   },
