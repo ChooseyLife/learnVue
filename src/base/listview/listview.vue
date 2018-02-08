@@ -1,5 +1,5 @@
 <template>
-  <scroll class="listview" :data="data">
+  <scroll class="listview" :data="data" ref="listview">
     <ul>
       <li v-for="list in data" :key="list.title" class="list-group">
         <h2 class="list-group-title">{{list.title}}</h2>
@@ -30,9 +30,6 @@
 <script type="text/ecmascript-6">
 import Scroll from '@/base/scroll/scroll'
 import Lazy from 'vue-lazyload'
-import {getData} from 'common/js/dom'
-
-const ANCHOR_HEIGHT = 18
 
 export default {
   props: {
@@ -47,6 +44,10 @@ export default {
       currentIndex: 0,
       diff: -1
     }
+  },
+  created() {
+    this.touch = {}
+    this.listHeight = []
   },
   computed: {
     shortcutList() {
@@ -63,32 +64,8 @@ export default {
   },
   methods: {
     onShortcutTouchStart(e) {
-      let anchorIndex = getData(e.target, 'index')
-      let firstTouch = e.touches[0]
-      this.touch.y1 = firstTouch.pageY
-      this.touch.anchorIndex = anchorIndex
-
-      this._scrollTo(anchorIndex)
     },
     onShortcutTouchMove(e) {
-      let firstTouch = e.touches[0]
-      this.touch.y2 = firstTouch.pageY
-      let delta = (this.touch.y2 - this.touch.y1) / ANCHOR_HEIGHT | 0
-      let anchorIndex = parseInt(this.touch.anchorIndex) + delta
-
-      this._scrollTo(anchorIndex)
-    },
-    _calculateHeight() {
-      // 计算高度
-      this.listHeight = []
-      const list = this.$refs.listGroup
-      let height = 0
-      this.listHeight.push(height)
-      for (let i = 0; i < list.length; i++) {
-        let item = list[i]
-        height += item.clientHeight
-        this.listHeight.push(height)
-      }
     },
     _scrollTo(index) {
       if (!index && index !== 0) {
