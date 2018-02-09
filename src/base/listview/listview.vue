@@ -33,6 +33,9 @@
     <div class="list-fixed" ref="fixed" v-show="fixedTitle">
       <div class="fixed-title">{{fixedTitle}}</div>
     </div>
+    <div v-show="!data.length" class="loading-container">
+      <loading></loading>
+    </div>
   </scroll>
 </template>
 
@@ -40,9 +43,11 @@
 import Scroll from '@/base/scroll/scroll'
 import Lazy from 'vue-lazyload'
 import {getData} from '@/common/js/dom'
+import Loading from '@/base/loading/loading'
 
 // anchor的高度（设计稿上的数值）
 const ANCHOR_HEIGHT = 18
+const TITLE_HEIGHT = 30
 export default {
   props: {
     data: {
@@ -153,17 +158,28 @@ export default {
         let heightBottom = listHeight[i + 1]
         if (-newY >= heightTop && -newY < heightBottom) {
           this.currentIndex = i
+          this.diff = heightBottom + newY
           return
         }
         this.currentIndex = 0
       }
       // 当滚动到底部，是-newY大于最后一个元素的上限
       this.currentIndex = listHeight - 2
+    },
+    diff(newVal) {
+      // 修改fixed的top，有过渡效果  顶出fixedTitle时有过渡效果
+      let fixedTop = (newVal > 0 && newVal < TITLE_HEIGHT) ? newVal - TITLE_HEIGHT : 0
+      if (this.fixedTop === fixedTop) {
+        return
+      }
+      this.fixedTop = fixedTop
+      this.$refs.fixed.style.transform = `translate3d(0,${fixedTop}px,0)`
     }
   },
   components: {
     Scroll,
-    Lazy
+    Lazy,
+    Loading
   }
 }
 </script>
@@ -183,7 +199,7 @@ export default {
         padding-left: 20px
         font-size: $font-size-small
         color: $color-text-l
-        background: $color-background
+        background: $color-highlight-background
       .list-group-item
         display: flex
         align-items: center
@@ -228,4 +244,9 @@ export default {
         font-size: $font-size-small
         color: $color-text-l
         background: $color-highlight-background
+    .loading-container
+      position: absolute
+      width: 100%
+      top: 50%
+      transform: translateY(-50%)
 </style>
