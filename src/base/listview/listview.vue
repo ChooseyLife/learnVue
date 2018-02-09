@@ -114,6 +114,15 @@ export default {
       this.scrollY = pos.y
     },
     _scrollTo(index) {
+      if (!index && index !== 0) {
+        return
+      }
+      // 处理滑动时index边界情况（一直滑动，导致某个位置时Y为负值）
+      if (index < 0) {
+        index = 0
+      } else if (index > this.listHeight.length - 2) {
+        index = this.listHeight.length - 2
+      }
       // 解决点击右侧入口的样式高亮问题
       this.scrollY = -this.listHeight[index]
       this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
@@ -127,6 +136,9 @@ export default {
       }, 20)
     },
     scrollY(newY) {
+      // 左右联动区块的逻辑: 实时知道滚动位置，根据滚动位置算出在listGroup的区间
+      // 然后就知道右侧区间对应着的索引，然后高亮
+
       // 判断scrollY落到哪个区间，上限和下限对比，遍历listHeight获得
       // 逻辑：拉到最顶，拉到中间，拉到底部
       // 当滚动到顶部 newY > 0
