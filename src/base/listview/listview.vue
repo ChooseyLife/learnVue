@@ -20,8 +20,12 @@
     <div class="list-shortcut" @touchstart.stop.prevent="onShortcutTouchStart" @touchmove.stop.prevent="onShortcutTouchMove"
          @touchend.stop>
       <ul>
-        <li v-for="(item, index) in shortcutList" :data-index="index" class="item" :key="item.code"
-            :class="{'current':currentIndex===index}">{{item}}
+        <li v-for="(item, index) in shortcutList"
+            :data-index="index"
+            class="item"
+            :key="item.code"
+            :class="{'current':currentIndex===index}">
+          {{item}}
         </li>
       </ul>
     </div>
@@ -81,6 +85,7 @@ export default {
       this.touch.y1 = firstTouch.pageY
       this.touch.anchorIndex = anchorIndex
       this._scrollTo(anchorIndex)
+      console.log(anchorIndex)
     },
     onShortcutTouchMove(e) {
       // 计算开始滚动前的位置 和 要滚动后的位置
@@ -109,6 +114,8 @@ export default {
       this.scrollY = pos.y
     },
     _scrollTo(index) {
+      // 解决点击右侧入口的样式高亮问题
+      this.scrollY = -this.listHeight[index]
       this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
     }
   },
