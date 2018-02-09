@@ -1,5 +1,10 @@
 <template>
-  <scroll class="listview" :data="data" ref="listview">
+  <scroll class="listview"
+          :data="data"
+          :listenScroll='listenScroll'
+          :probeType='probeType'
+          ref="listview"
+          @scroll="scroll">
     <ul>
       <li v-for="list in data" :key="list.title" class="list-group" ref="listGroup">
         <h2 class="list-group-title">{{list.title}}</h2>
@@ -43,6 +48,7 @@ export default {
   },
   data() {
     return {
+      // 设定初始化的滚动位置 scrollY, 设定右侧的高亮 currentIndex
       scrollY: -1,
       currentIndex: 0,
       diff: -1
@@ -50,7 +56,9 @@ export default {
   },
   created() {
     this.touch = {}
+    this.listenScroll = true
     this.listHeight = []
+    this.probeType = 3
   },
   computed: {
     shortcutList() {
@@ -84,8 +92,54 @@ export default {
       let anchorIndex = parseInt(this.touch.anchorIndex) + delta
       this._scrollTo(anchorIndex)
     },
+    _calculateHeight() {
+      // 计算每次listGroup的高度
+      this.listHeight = []
+      const list = this.$refs.listGroup
+      let height = 0
+      this.listHeight.push(height)
+      for (let i = 0; i < list.length; i++) {
+        let item = list[i]
+        height += item.clientHeight
+        this.listHeight.push(height)
+      }
+    },
+    scroll(pos) {
+      // 监听scroll子组件滚动的时候的 Y 值
+      this.scrollY = pos.y
+    },
     _scrollTo(index) {
       this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
+    }
+  },
+  watch: {
+    data() {
+      // 监测data的变化，重新计算高度
+      setTimeout(() => {
+        this._calculateHeight()
+      }, 20)
+    },
+    scrollY(newY) {
+      // 判断scrollY落到哪个区间，上限和下限对比，遍历listHeight获得
+      // 逻辑：拉到最顶，拉到中间，拉到底部
+      // 当滚动到顶部 newY > 0
+      if (newY > 0) {
+        this.currentIndex = 0
+        return
+      }
+      const listHeight = this.listHeight
+      // 中间滚动
+      for (let i = 0; i < listHeight.length - 1; i++) {
+        let heightTop = listHeight[i]
+        let heightBottom = listHeight[i + 1]
+        if (-newY >= heightTop && -newY < heightBottom) {
+          this.currentIndex = i
+          return
+        }
+        this.currentIndex = 0
+      }
+      // 当滚动到底部，是-newY大于最后一个元素的上限
+      this.currentIndex = listHeight - 2
     }
   },
   components: {
@@ -146,6 +200,7 @@ export default {
       position: absolute
       top: 0
       left: 0
+      transform: translateY(-1px)
       width: 100%
       .fixed-title
         height: 30px
