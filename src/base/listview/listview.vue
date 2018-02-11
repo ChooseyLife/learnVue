@@ -24,7 +24,8 @@
             :data-index="index"
             class="item"
             :key="item.code"
-            :class="{'current':currentIndex===index}">
+            :class="{'current':currentIndex===index}"
+            @click="singerView">
           {{item}}
         </li>
       </ul>
@@ -57,7 +58,7 @@ export default {
   },
   data() {
     return {
-      // 设定初始化的滚动位置 scrollY, 设定右侧的高亮 currentIndex
+      // 设定初始化的滚动位置 scrollY, 设定右侧的高亮 currentIndex, diff = 某个位置的上限 - scrollY
       scrollY: -1,
       currentIndex: 0,
       diff: -1
@@ -102,6 +103,7 @@ export default {
       let anchorIndex = parseInt(this.touch.anchorIndex) + delta
       this._scrollTo(anchorIndex)
     },
+    singerView() {},
     _calculateHeight() {
       // 计算每次listGroup的高度
       this.listHeight = []
@@ -128,8 +130,8 @@ export default {
       } else if (index > this.listHeight.length - 2) {
         index = this.listHeight.length - 2
       }
-      // 解决点击右侧入口的样式高亮问题
-      this.scrollY = -this.listHeight[index]
+      // 解决点击右侧入口的歌手字母标题title的同步， 获取了listHeight保存的上限标签的索引进行定位
+      this.scrollY = this.listHeight[index]
       this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
     }
   },
