@@ -7,7 +7,7 @@ import lazyLoad from 'vue-lazyload'
 import router from './router'
 import fastclick from 'fastclick'
 
-import 'common/stylus/index.styl'
+import '../../learnvue-admin/src/common/stylus/index.styl'
 // Vue.config.productionTip = false
 
 Vue.use(lazyLoad, {
