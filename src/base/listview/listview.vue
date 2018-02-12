@@ -9,7 +9,10 @@
       <li v-for="list in data" :key="list.title" class="list-group" ref="listGroup">
         <h2 class="list-group-title">{{list.title}}</h2>
         <ul>
-          <li v-for="item in list.items" :key="item.id" class="list-group-item">
+          <li v-for="item in list.items"
+              :key="item.id"
+              class="list-group-item"
+              @click="singerView">
             <img v-lazy="item.avatar" class="avatar">
             <span class="name" v-text="item.name"></span>
           </li>
@@ -24,8 +27,7 @@
             :data-index="index"
             class="item"
             :key="item.code"
-            :class="{'current':currentIndex===index}"
-            @click="singerView">
+            :class="{'current':currentIndex===index}">
           {{item}}
         </li>
       </ul>

@@ -13,6 +13,9 @@ const Singer = (resolve) => {
     resolve(module)
   })
 }
+
+const SingerDetail = () => import('components/singer-detail/singer-detail')
+
 const Rank = (resolve) => {
   import('components/Rank/Rank').then((module) => {
     resolve(module)
@@ -36,7 +39,13 @@ export default new Router({
     },
     {
       path: '/singer',
-      component: Singer
+      component: Singer,
+      children: [
+        {
+          path: ':id',
+          component: SingerDetail
+        }
+      ]
     },
     {
       path: '/rank',
