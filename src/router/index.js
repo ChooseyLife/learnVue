@@ -14,7 +14,11 @@ const Singer = (resolve) => {
   })
 }
 
-const SingerDetail = () => import('components/singer-detail/singer-detail')
+const SingerDetail = (resolve) => {
+  import('components/singer-detail/singer-detail').then((module) => {
+    resolve(module)
+  })
+}
 
 const Rank = (resolve) => {
   import('components/Rank/Rank').then((module) => {

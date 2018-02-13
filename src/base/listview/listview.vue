@@ -12,7 +12,7 @@
           <li v-for="item in list.items"
               :key="item.id"
               class="list-group-item"
-              @click="singerView">
+              @click="singerView(item)">
             <img v-lazy="item.avatar" class="avatar">
             <span class="name" v-text="item.name"></span>
           </li>
@@ -105,7 +105,9 @@ export default {
       let anchorIndex = parseInt(this.touch.anchorIndex) + delta
       this._scrollTo(anchorIndex)
     },
-    singerView() {},
+    singerView(item) {
+      this.$emit('select', item)
+    },
     _calculateHeight() {
       // 计算每次listGroup的高度
       this.listHeight = []
