@@ -25,8 +25,11 @@
 <script type="text/ecmascript-6">
 import Scroll from '@/base/scroll/scroll'
 import SongList from '@/base/song-list/song-list'
-
+import {prefixStyle} from '@/common/js/dom'
 const RESERVED_HEIGHT = 40
+const transform = prefixStyle('transform')
+const backdrop = prefixStyle('backdrop-filter')
+
 export default {
   props: {
     bgImage: {
@@ -75,8 +78,7 @@ export default {
       let zIndex = 0
       let scale = 1
       let blur = 0
-      this.$refs.layer.style['transform'] = `translate3d(0, ${translateY}px, 0)`
-      this.$refs.layer.style['webkitTransform'] = `translate3d(0, ${translateY}px, 0)`
+      this.$refs.layer.style[transform] = `translate3d(0, ${translateY}px, 0)`
       // 计算图片放大后，与滚动相契合
       const percent = Math.abs(newY / this.imageHeight)
       if (newY > 0) {
@@ -86,8 +88,7 @@ export default {
         blur = Math.min(20 * percent, 20)
       }
       // 高斯模糊效果 IOS才能明显有
-      this.$refs.filter.style['backdrop-filter'] = `blur(${blur}px)`
-      this.$refs.filter.style['webkitBackdropFilter'] = `blur(${blur}px)`
+      this.$refs.filter.style[backdrop] = `blur(${blur}px)`
       if (newY < this.minTranslateY) {
         zIndex = 10
         this.$refs.bgImage.style.paddingTop = 0
@@ -99,8 +100,7 @@ export default {
         this.$refs.playBtn.style.display = 'block'
       }
       this.$refs.bgImage.style.zIndex = zIndex
-      this.$refs.bgImage.style['transform'] = `scale(${scale})`
-      this.$refs.bgImage.style['webkitTransform'] = `scale(${scale})`
+      this.$refs.bgImage.style[transform] = `scale(${scale})`
     }
   },
   components: {
