@@ -17,7 +17,7 @@ export default {
   computed: {
     ...mapGetters([
       'fullScreen',
-      'playlist'
+      'playList'
     ])
   }
 }
