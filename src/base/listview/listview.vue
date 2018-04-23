@@ -1,4 +1,5 @@
 <template>
+  <!-- 歌手列表 -->
   <scroll class="listview"
           :data="data"
           :listenScroll='listenScroll'
@@ -93,7 +94,6 @@ export default {
       this.touch.y1 = firstTouch.pageY
       this.touch.anchorIndex = anchorIndex
       this._scrollTo(anchorIndex)
-      console.log(anchorIndex)
     },
     onShortcutTouchMove(e) {
       // 计算开始滚动前的位置 和 要滚动后的位置
